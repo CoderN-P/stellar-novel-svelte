@@ -14,6 +14,7 @@
 	import { BoldIcon, CodeIcon, ItalicIcon, StrikethroughIcon, UnderlineIcon } from 'lucide-svelte';
 	import { writable } from 'svelte/store';
 	import ColorSelector from './color-selector.svelte';
+	import VocabSelector from './vocab-selector.svelte';
 	import LinkSelector from './link-selector.svelte';
 	import NodeSelector from './node-selector.svelte';
 	import { BubbleMenuPlugin, type BubbleMenuPluginProps } from '@tiptap/extension-bubble-menu';
@@ -23,6 +24,7 @@
 
 	let isNodeSelectorOpen = writable(false);
 	let isColorSelectorOpen = writable(false);
+	let isVocabSelectorOpen = writable(false);
 	let isLinkSelectorOpen = writable(false);
 
 	export let editor: Editor;
@@ -122,6 +124,7 @@
 	class="flex w-fit divide-x divide-stone-200 rounded border border-stone-200 bg-white shadow-xl"
 >
 	<NodeSelector {editor} bind:isOpen={$isNodeSelectorOpen} />
+	<VocabSelector {editor} bind:isOpen={$isVocabSelectorOpen} />
 	<LinkSelector {editor} bind:isOpen={$isLinkSelectorOpen} />
 	<div class="flex">
 		{#each items as item, index (index)}

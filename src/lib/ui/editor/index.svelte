@@ -6,7 +6,7 @@
 
 	import { getPrevText } from '$lib/editor.js';
 	import { createLocalStorageStore } from '$lib/stores/localStorage.js';
-	import { createDebouncedCallback, noop } from '$lib/utils.js';
+	import { createDebouncedCallback, noop } from '$lib/ui/utils.js';
 	import { Editor, Extension, type JSONContent } from '@tiptap/core';
 	import type { EditorProps } from '@tiptap/pm/view';
 	import { useCompletion } from 'ai/svelte';
@@ -18,6 +18,7 @@
 	import Toasts, { addToast } from '../toasts.svelte';
 
 	import EditorBubbleMenu from './bubble-menu/index.svelte';
+	
 
 	/**
 	 * The API route to use for the OpenAI completion API.
@@ -71,16 +72,7 @@
 	 * @default false
 	 */
 	export let disableLocalStorage = false;
-  	/**
-	 * The editor instance. Bind to it to get access to the editor.
-	 * @example
-	 * <script lang="ts">
-	 * 	import { type EditorType, Editor } from 'novel-svelte';
-	 * 	let editor: EditorType;
-	 * </script>
-	 * 
-	 * <Editor bind:editor />
-	 */
+	 
 	export let editor: Editor | undefined = undefined;
 
 	let element: Element;
@@ -155,6 +147,9 @@
 				...editorProps
 			},
 			onUpdate: (e) => {
+				const markdown = e.editor.storage.markdown.getMarkdown();
+				
+				console.log('markdown', markdown);
 				const selection = e.editor.state.selection;
 				const lastTwo = getPrevText(e.editor, {
 					chars: 2

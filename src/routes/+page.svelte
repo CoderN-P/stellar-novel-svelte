@@ -8,7 +8,9 @@
 
 <Nav />
 
-<main class="flex justify-center sm:pt-[15vh] sm:px-4">
+
+
+<main class="flex flex-col items-center gap-4 justify-center sm:pt-[15vh] sm:px-4">
 	<Editor
 		bind:editor
 		onUpdate={() => {

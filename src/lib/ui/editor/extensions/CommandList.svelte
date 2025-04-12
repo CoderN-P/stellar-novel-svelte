@@ -3,7 +3,7 @@
 	import { LoadingCircle } from '$lib/ui/icons/index.js';
 	import { useCompletion } from 'ai/svelte';
 	import type { CommandItemProps } from './slash-command.js';
-	import { anyify } from '$lib/utils.js';
+	import { anyify } from '$lib/ui/utils.js';
 	import { addToast } from '$lib/ui/toasts.svelte';
 
 	export let items: CommandItemProps[] = [];

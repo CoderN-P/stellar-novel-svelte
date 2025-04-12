@@ -1,4 +1,4 @@
-import { isBrowser } from '$lib/utils.js';
+import { isBrowser } from '$lib/ui/utils';
 import { onDestroy } from 'svelte';
 import { writable } from 'svelte/store';
 

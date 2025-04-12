@@ -9,11 +9,16 @@ import TaskItem from '@tiptap/extension-task-item';
 import TaskList from '@tiptap/extension-task-list';
 import TextStyle from '@tiptap/extension-text-style';
 import TiptapUnderline from '@tiptap/extension-underline';
+import GlobalDragHandle from 'tiptap-extension-global-drag-handle'
 import StarterKit from '@tiptap/starter-kit';
 import { Markdown } from 'tiptap-markdown';
 import UploadImagesPlugin from '../plugins/upload-images.js';
 import SlashCommand from './slash-command.js';
+import { InlineEquationNode } from '$lib/ui/editor/extensions/inlineEquation.js';
+import { BlockEquationNode } from '$lib/ui/editor/extensions/blockEquation.js';
 import UpdatedImage from './updated-image.js';
+import { VocabularyNode } from './vocabulary.js';
+import { CodeBlockNode } from '$lib/ui/editor/extensions/codeBlock.js';
 
 export const defaultExtensions = [
 	StarterKit.configure({
@@ -24,7 +29,7 @@ export const defaultExtensions = [
 		},
 		orderedList: {
 			HTMLAttributes: {
-				class: 'list-decimal list-outside leading-3 -mt-2'
+				class: 'list-decimal space-y-2 list-outside  '
 			}
 		},
 		listItem: {
@@ -34,17 +39,13 @@ export const defaultExtensions = [
 		},
 		blockquote: {
 			HTMLAttributes: {
-				class: 'border-l-4 border-stone-700'
+				class: 'border-l-4 border-gray-200'
 			}
 		},
-		codeBlock: {
-			HTMLAttributes: {
-				class: 'rounded-sm bg-stone-100 p-5 font-mono font-medium text-stone-800'
-			}
-		},
+		codeBlock: false,
 		code: {
 			HTMLAttributes: {
-				class: 'rounded-md bg-stone-200 px-1.5 py-1 font-mono font-medium text-stone-900',
+				class: 'rounded-md bg-gray-100 px-1 py-0.5 font-mono text-sm text-gray-800',
 				spellcheck: 'false'
 			}
 		},
@@ -54,6 +55,12 @@ export const defaultExtensions = [
 			width: 4
 		},
 		gapcursor: false
+	}),
+	CodeBlockNode,
+	InlineEquationNode,
+	BlockEquationNode,
+	GlobalDragHandle.configure({
+		handle: '.drag-handle',
 	}),
 	// patch to fix horizontal rule bug: https://github.com/ueberdosis/tiptap/pull/3859#issuecomment-1536799740
 	HorizontalRule.extend({
@@ -112,6 +119,7 @@ export const defaultExtensions = [
 		includeChildren: true
 	}),
 	SlashCommand,
+	VocabularyNode,
 	TiptapUnderline,
 	TextStyle,
 	Color,

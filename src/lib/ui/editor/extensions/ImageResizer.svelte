@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { anyify } from '$lib/utils.js';
+	import { anyify } from '$lib/ui/utils.js';
 	import Moveable from 'svelte-moveable';
 
 	export let editor: any;
