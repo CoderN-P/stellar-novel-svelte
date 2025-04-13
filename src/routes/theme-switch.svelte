@@ -1,11 +1,27 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { createLocalStorageStore } from '$lib/stores/localStorage.js';
+	import { setMode, mode } from 'mode-watcher';
 	import { createDropdownMenu, melt } from '@melt-ui/svelte';
 	import { Check, Monitor, Moon, Sun } from 'lucide-svelte';
+	import { writable } from 'svelte/store';
 
-	const theme = createLocalStorageStore('theme', 'system');
 
+
+	function wrapModeStore(readableStore, setter) {
+		return {
+			subscribe: readableStore.subscribe,
+			set: setter,
+			update: fn => {
+				let value;
+				const unsubscribe = readableStore.subscribe(v => value = v);
+				unsubscribe(); // sync pull
+				setter(fn(value));
+			}
+		};
+	}
+
+	const writableMode = wrapModeStore(mode, setMode);
+	
 	const {
 		elements: { trigger, menu },
 		builders: { createMenuRadioGroup }
@@ -16,20 +32,16 @@
 	const {
 		elements: { radioGroup, radioItem }
 	} = createMenuRadioGroup({
-		value: theme,
+		value: writableMode,
 		onValueChange({ next }) {
-			const darkThemeMq = window.matchMedia('(prefers-color-scheme: dark)');
 
 			if (next === 'dark') {
-				document.documentElement.classList.add('dark-theme');
-				document.documentElement.style.colorScheme = 'dark';
+				setMode('light');
 			} else if (next === 'light') {
-				document.documentElement.classList.remove('dark-theme');
-				document.documentElement.style.colorScheme = 'light';
-			} else if (darkThemeMq.matches) {
-				document.documentElement.classList.add('dark-theme');
-				document.documentElement.style.colorScheme = 'dark';
-			}
+				setMode('dark');
+			} else if (next === 'system') {
+				setMode('system');
+			} 
 
 			return next;
 		}
@@ -43,11 +55,11 @@
 		use:melt={$trigger}
 		aria-label="Update dimensions"
 	>
-		{#if $theme === 'system'}
+		{#if $mode === 'system'}
 			<Monitor class="square-5" />
-		{:else if $theme === 'dark'}
+		{:else if $mode === 'dark'}
 			<Moon class="square-5" />
-		{:else if $theme === 'light'}
+		{:else if $mode === 'light'}
 			<Sun class="square-5" />
 		{/if}
 		<span class="sr-only">Open Dropdown menu</span>
@@ -66,7 +78,7 @@
 		>
 			<Monitor class="square-4" />
 			System
-			{#if $theme === 'system'}
+			{#if $mode === 'system'}
 				<Check class="square-4 ml-auto" />
 			{/if}
 		</button>
@@ -77,7 +89,7 @@
 		>
 			<Moon class="square-4" />
 			Dark
-			{#if $theme === 'dark'}
+			{#if $mode === 'dark'}
 				<Check class="square-4 ml-auto" />
 			{/if}
 		</button>
@@ -88,7 +100,7 @@
 		>
 			<Sun class="square-4" />
 			Light
-			{#if $theme === 'light'}
+			{#if $mode === 'light'}
 				<Check class="square-4 ml-auto" />
 			{/if}
 		</button>

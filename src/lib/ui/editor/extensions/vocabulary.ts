@@ -3,7 +3,6 @@ import { SvelteNodeViewRenderer } from 'svelte-tiptap'
 import VocabularyTerm from '../renderers/Vocabulary.svelte'
 import { InputRule } from '@tiptap/core';
 
-
 const vocabInputRule = (type) =>
   new InputRule({
     find: /\|([^:|]+):\s?([^|]+)\|$/, 
@@ -66,7 +65,6 @@ export const VocabularyNode = Node.create({
         const { from, to } = state.selection
         const text = state.doc.textBetween(from, to)
         
-        console.log(text);
 
         if (text) {
           return chain()
@@ -111,10 +109,55 @@ export const VocabularyNode = Node.create({
   addStorage() {
     return {
       markdown: {
-        serialize(state, node)  {
-          const { term, definition } = node.attrs
+        serialize(state, node) {
+          const { term, definition } = node.attrs;
           state.write(`|${term}: ${definition}|`);
         },
+        parse: {
+          setup(markdownit) {
+            markdownit.inline.ruler.before('text', 'vocabulary', function(state, silent) {
+              const start = state.pos;
+              const max = state.posMax;
+
+              if (state.src.charAt(start) !== '|') return false;
+              let end = start + 1;
+              while (end < max) {
+                if (state.src[end] === '|' && state.src[end - 1] !== '\\') break;
+                end++;
+              }
+              if (end >= max) return false;
+
+              const content = state.src.slice(start + 1, end);
+              if (!content.includes(':')) return false;
+
+              const [termRaw, ...definitionParts] = content.split(':');
+              const term = termRaw.trim();
+              const definition = definitionParts.join(':').trim();
+
+              if (!term || !definition) return false;
+
+              if (!silent) {
+                const token = state.push('vocabulary', '', 0);
+                token.content = term;
+                token.meta = { definition };
+              }
+
+              state.pos = end + 1;
+              return true;
+            });
+
+            markdownit.renderer.rules.vocabulary = function(tokens, idx) {
+              const token = tokens[idx];
+              const term = token.content;
+              const def = token.meta.definition;
+              return `<span data-vocabulary-term data-term="${term}" data-definition="${def}">${term}</span>`;
+            };
+          },
+          updateDOM(el){
+            console.log(el);
+          }
+        },
+        
       }
     }
   },

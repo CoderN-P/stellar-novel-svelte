@@ -77,7 +77,18 @@ export const InlineEquationNode = Node.create({
         serialize(state, node) {
           const { formula } = node.attrs;
           state.write(`$${formula}$`);
-        }
+        },
+        parse: {
+          inline: [
+            {
+              match: /(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)/,
+              node: 'inlineEquation',
+              getAttrs: (match) => ({
+                formula: match[1].trim(),
+              }),
+            },
+          ],
+        },
       }
     }
   }

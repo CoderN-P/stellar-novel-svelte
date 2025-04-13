@@ -20,7 +20,7 @@
 		openDelay={10}
 		closeDelay={10}
 		triggerClass="inline-block"
-		contentClass="dark:bg-slate-900/30 backdrop-blur-xl shadow-md shadow-slate-400/50"
+		contentClass="dark:bg-black backdrop-blur-xl bg-white shadow-md shadow-slate-400/50"
 	>
 		<div slot="trigger">
 			<span

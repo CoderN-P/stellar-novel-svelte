@@ -5,10 +5,10 @@
 	import '../../styles/tailwind.css';
 
 	import { getPrevText } from '$lib/editor.js';
-	import { createLocalStorageStore } from '$lib/stores/localStorage.js';
 	import { createDebouncedCallback, noop } from '$lib/ui/utils.js';
 	import { Editor, Extension, type JSONContent } from '@tiptap/core';
 	import type { EditorProps } from '@tiptap/pm/view';
+	import { embeds } from '$lib/stores/embeds';
 	import { useCompletion } from 'ai/svelte';
 	import ImageResizer from './extensions/ImageResizer.svelte';
 	import { onMount } from 'svelte';
@@ -30,13 +30,15 @@
 	 * Defaults to "relative min-h-[500px] w-full max-w-screen-lg border-stone-200 bg-white p-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg".
 	 */
 	let className =
-		'relative min-h-[500px] w-full max-w-screen-lg border-stone-200 bg-white p-12 pb-24 sm:pb-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg';
+		'relative min-h-[500px] w-full max-w-screen-lg border-gray-100 bg-white dark:bg-slate-950 dark:border-slate-800 p-12 pb-24 sm:pb-12 px-8 sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:px-12 sm:shadow-lg';
 	export { className as class };
 	/**
 	 * The default value to use for the editor.
 	 * Defaults to defaultEditorContent.
 	 */
-	export let defaultValue: JSONContent | string = defaultEditorContent;
+	export let value: string | JSONContent = defaultEditorContent;
+	
+	export let componentMap: Record<string, () => Promise<{ default: any }>> = {};
 	/**
 	 * A list of extensions to use for the editor, in addition to the default Novel extensions.
 	 * Defaults to [].
@@ -98,16 +100,11 @@
 			// }
 		}
 	});
-
-	const content = createLocalStorageStore(storageKey, defaultValue);
+	
 	let hydrated = false;
+	
 	$: if (editor && !hydrated) {
-		const value = disableLocalStorage ? defaultValue : $content;
-
-		if (value) {
-			editor.commands.setContent(value);
-		}
-
+		editor.commands.setContent(value);
 		hydrated = true;
 	}
 
@@ -126,15 +123,11 @@
 	}
 
 	const debouncedUpdates = createDebouncedCallback(async ({ editor }) => {
-		if (!disableLocalStorage) {
-			const json = editor.getJSON();
-			content.set(json);
-		}
-
 		onDebouncedUpdate(editor);
 	}, debounceDuration);
 
 	onMount(() => {
+		$embeds = componentMap;
 		editor = new Editor({
 			element: element,
 			onTransaction: () => {
@@ -148,8 +141,7 @@
 			},
 			onUpdate: (e) => {
 				const markdown = e.editor.storage.markdown.getMarkdown();
-				
-				console.log('markdown', markdown);
+				console.log(markdown);
 				const selection = e.editor.state.selection;
 				const lastTwo = getPrevText(e.editor, {
 					chars: 2

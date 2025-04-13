@@ -121,7 +121,7 @@
 
 <div
 	bind:this={element}
-	class="flex w-fit divide-x divide-stone-200 rounded border border-stone-200 bg-white shadow-xl"
+	class="flex w-fit divide-x divide-gray-200 dark:divide-slate-800 rounded-lg border dark:border-slate-800 border-gray-200 dark:bg-black bg-white shadow-xl"
 >
 	<NodeSelector {editor} bind:isOpen={$isNodeSelectorOpen} />
 	<VocabSelector {editor} bind:isOpen={$isVocabSelectorOpen} />
@@ -130,7 +130,7 @@
 		{#each items as item, index (index)}
 			<button
 				on:click={item.command}
-				class="p-2 text-stone-600 hover:bg-stone-100 active:bg-stone-200"
+				class="p-2 text-gray-600 dark:text-slate-300 dark:hover:bg-slate-800 dark:active:bg-slate-700 hover:bg-gray-100 active:bg-gray-200"
 				type="button"
 			>
 				<svelte:component

@@ -17,7 +17,7 @@
 
 <NodeViewWrapper class="my-2">
 	{#if mounted}
-		<div class="rounded-lg border border-gray-100 bg-white p-4">
+		<div class="rounded-lg border dark:bg-slate-900 dark:border-slate-800 border-gray-100 bg-white p-4">
 			<Katex
 				displayMode
 				throwError={false}

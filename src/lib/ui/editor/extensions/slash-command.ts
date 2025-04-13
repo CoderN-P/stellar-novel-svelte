@@ -13,7 +13,9 @@ import {
 	ListOrdered,
 	MessageSquarePlus,
 	Text,
-	TextQuote
+	TextQuote,
+	Box,
+	BookOpen, HelpCircle
 } from 'lucide-svelte';
 import CommandList from './CommandList.svelte';
 // import { toast } from 'sonner';
@@ -21,14 +23,18 @@ import CommandList from './CommandList.svelte';
 // import { startImageUpload } from '@/ui/editor/plugins/upload-images';
 import { Magic } from '$lib/ui/icons/index.js';
 import type { SvelteComponent } from 'svelte';
+import { embeds } from '$lib/stores/embeds.js';
+import { QuestionNode } from './question.js';
 
 export interface CommandItemProps {
 	title: string;
-	description: string;
-	icon: SvelteComponent;
+	description?: string;
+	searchTerms?: string[];
+	icon?: string;
+	command: (props: { editor: Editor; range: Range }) => void;
 }
 
-interface CommandProps {
+export interface CommandProps {
 	editor: Editor;
 	range: Range;
 }
@@ -62,6 +68,28 @@ const getSuggestionItems = ({ query }: { query: string }) => {
 			description: 'Use AI to expand your thoughts.',
 			searchTerms: ['gpt'],
 			icon: Magic
+		},
+		{
+			title: 'Embed Component',
+			description: 'Embed a custom component.',
+			searchTerms: ['embed', 'component', 'custom'],
+			icon: Box,
+			command: ({ editor, range }: CommandProps) => {
+				editor.chain().focus().deleteRange(range).run();
+				// We'll handle the component selection in the CommandList component
+				return true;
+			}
+		},
+		{
+			title: 'Vocabulary Term',
+			description: 'Create a vocabulary term with definition.',
+			searchTerms: ['vocab', 'term', 'definition', 'glossary'],
+			icon: BookOpen,
+			command: ({ editor, range }: CommandProps) => {
+				editor.chain().focus().deleteRange(range).run();
+				// We'll handle the vocabulary creation in the CommandList component
+				return true;
+			}
 		},
 		// {
 		// 	title: 'Send Feedback',
@@ -156,34 +184,54 @@ const getSuggestionItems = ({ query }: { query: string }) => {
 			icon: Code,
 			command: ({ editor, range }: CommandProps) =>
 				editor.chain().focus().deleteRange(range).toggleCodeBlock().run()
+		},
+		{
+			title: 'Question',
+			description: 'Create a question with options.',
+			command: ({ editor, range }: CommandProps) => {
+				// Create a default option
+				const defaultOption = {
+					type: 'paragraph',
+					content: [
+						{
+							type: 'text',
+							text: 'Option A'
+						}
+					]
+				};
+				
+				editor
+					.chain()
+					.focus()
+					.deleteRange(range)
+					.insertContent({
+						type: 'question',
+						attrs: {
+							options: [defaultOption],
+							correctOption: JSON.stringify(defaultOption)
+						},
+						content: [
+							{
+								type: 'paragraph',
+								content: [
+									{
+										type: 'text',
+										text: 'Enter your question here...'
+									}
+								]
+							}
+						]
+					})
+					.run();
+			},
+			icon: HelpCircle,
 		}
-		// {
-		// 	title: 'Image',
-		// 	description: 'Upload an image from your computer.',
-		// 	searchTerms: ['photo', 'picture', 'media'],
-		// 	// icon: <ImageIcon size={18} />,
-		// 	command: ({ editor, range }: CommandProps) => {
-		// 		editor.chain().focus().deleteRange(range).run();
-		// 		// upload image
-		// 		const input = document.createElement('input');
-		// 		input.type = 'file';
-		// 		input.accept = 'image/*';
-		// 		input.onchange = async () => {
-		// 			if (input.files?.length) {
-		// 				const file = input.files[0];
-		// 				const pos = editor.view.state.selection.from;
-		// 				// startImageUpload(file, editor.view, pos);
-		// 			}
-		// 		};
-		// 		input.click();
-		// 	}
-		// }
 	].filter((item) => {
 		if (typeof query === 'string' && query.length > 0) {
 			const search = query.toLowerCase();
 			return (
 				item.title.toLowerCase().includes(search) ||
-				item.description.toLowerCase().includes(search) ||
+				item.description?.toLowerCase().includes(search) ||
 				(item.searchTerms && item.searchTerms.some((term: string) => term.includes(search)))
 			);
 		}

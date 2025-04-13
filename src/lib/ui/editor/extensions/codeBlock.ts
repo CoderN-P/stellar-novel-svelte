@@ -8,6 +8,18 @@ const lowlight = createLowlight(common);
 
 export const CodeBlockNode = CodeBlockLowlight.extend({
 	name: 'codeBlock',
+	
+	addAttributes() {
+		return {
+			language: {
+				default: 'javascript',
+			},
+			content: {
+				default: '',
+			}
+		}
+	},
+	
 	addNodeView() {
 		return SvelteNodeViewRenderer(CodeBlock);
 	},
@@ -24,9 +36,9 @@ export const CodeBlockNode = CodeBlockLowlight.extend({
 		return {
 			markdown: {
 				serialize(state, node) {
-					const { language, code } = node.attrs;
+					const { language, content } = node.attrs;
 					console.log(node.attrs);
-					state.write(`\`\`\`${language ?? 'javascript'}\n${code ?? ''}\n\`\`\``);
+					state.write(`\`\`\`${language ?? 'javascript'}\n${content ?? ''}\n\`\`\``);
 				},
 			}
 		}

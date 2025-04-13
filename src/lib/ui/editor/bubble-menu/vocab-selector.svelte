@@ -17,14 +17,14 @@
 <div class="relative">
 	<button
 		type="button"
-		class="flex h-full items-center space-x-2 px-3 py-1.5 text-sm font-medium text-stone-600 hover:bg-stone-100 active:bg-stone-200"
+		class="flex h-full items-center space-x-2 px-3 py-1.5 text-sm font-medium dark:text-slate-300 text-gray-600 dark:hover:bg-slate-800 dark:active:bg-slate-700 hover:bg-gray-100 active:bg-gray-200"
 		on:click={() => {
 			isOpen = !isOpen;
 		}}
 	>
 		
 		<p
-			class={cn('underline decoration-stone-400 underline-offset-4', {
+			class={cn('underline decoration-gray-400 dark:decoration-slate-500 underline-offset-4', {
 				'text-blue-500': editor.isActive('vocabulary')
 			})}
 		>
@@ -42,7 +42,7 @@
 				}
 				isOpen = false;
 			}}
-			class="fixed top-full z-[99999] mt-1 flex w-60 overflow-hidden rounded border border-stone-200 bg-white p-1 shadow-xl animate-in fade-in slide-in-from-top-1"
+			class="fixed top-full z-[99999] mt-1 flex w-60 overflow-hidden rounded border dark:border-slate-800 border-gray-200 dark:bg-black bg-white p-1 shadow-xl animate-in fade-in slide-in-from-top-1"
 		>
 			<!-- svelte-ignore a11y-autofocus -->
 			<input
@@ -50,7 +50,7 @@
 				bind:this={inputRef}
 				type="text"
 				placeholder="Enter a definition"
-				class="flex-1 bg-white p-1 text-sm outline-none"
+				class="flex-1 dark:bg-black bg-white p-1 text-sm outline-none"
 				value={getSelectedDefinition()}
 			/>
 			{#if getSelectedDefinition()}
@@ -66,7 +66,7 @@
 				</button>
 			{:else}
 				<button
-					class="flex items-center rounded-sm p-1 text-stone-600 transition-all hover:bg-stone-100"
+					class="flex items-center rounded-sm p-1 text-gray-600 transition-all dark:text-slate-300 hover:bg-slate-800 hover:bg-gray-100"
 				>
 					<Check class="h-4 w-4" />
 				</button>

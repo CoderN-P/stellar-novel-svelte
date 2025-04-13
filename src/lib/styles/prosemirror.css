@@ -86,7 +86,7 @@ ul[data-type='taskList'] li > label {
 	cursor: grab;
 
 	&:hover {
-		@apply bg-gray-100;
+		@apply dark:bg-slate-800 bg-gray-100;
 	}
 
 	&:active {
@@ -114,7 +114,7 @@ ul[data-type='taskList'] li > label {
 ul[data-type='taskList'] li > label input[type='checkbox'] {
 	-webkit-appearance: none;
 	appearance: none;
-	@apply bg-gray-100 border-2 rounded-md border-gray-200;
+	@apply dark:bg-slate-900 bg-gray-100 border-2 rounded-md dark:border-slate-800 border-gray-200;
 	margin: 0;
 	cursor: pointer;
 	width: 1.2em;
@@ -126,11 +126,11 @@ ul[data-type='taskList'] li > label input[type='checkbox'] {
 	place-content: center;
 
 	&:hover {
-		@apply bg-gray-200;
+		@apply dark:bg-slate-800 bg-gray-200;
 	}
 
 	&:active {
-		@apply bg-gray-300;
+		@apply dark:bg-slate-700 bg-gray-300;
 	}
 
 	&::before {
@@ -159,4 +159,10 @@ ul[data-type='taskList'] li[data-checked='true'] > div > p {
 
 .tippy-box {
 	max-width: 400px !important;
+}
+
+div[contenteditable='false'].ProseMirror-selectednode {
+	outline: none !important;
+	border: none !important;
+	box-shadow: none !important;
 }

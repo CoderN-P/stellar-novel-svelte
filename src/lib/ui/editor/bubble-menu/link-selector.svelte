@@ -12,7 +12,7 @@
 <div class="relative">
 	<button
 		type="button"
-		class="flex h-full items-center space-x-2 px-3 py-1.5 text-sm font-medium text-stone-600 hover:bg-stone-100 active:bg-stone-200"
+		class="flex h-full items-center space-x-2 px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-slate-300 dark:hover:bg-slate-800 hover:bg-gray-100 active:bg-stone-200"
 		on:click={() => {
 			isOpen = !isOpen;
 		}}
@@ -35,7 +35,7 @@
 				url && editor.chain().focus().setLink({ href: url }).run();
 				isOpen = false;
 			}}
-			class="fixed top-full z-[99999] mt-1 flex w-60 overflow-hidden rounded border border-stone-200 bg-white p-1 shadow-xl animate-in fade-in slide-in-from-top-1"
+			class="fixed top-full z-[99999] mt-1 flex w-60 overflow-hidden rounded border dark:border-slate-800 border-gray-200 dark:bg-black bg-white p-1 shadow-xl animate-in fade-in slide-in-from-top-1"
 		>
 			<!-- svelte-ignore a11y-autofocus -->
 			<input
@@ -43,7 +43,7 @@
 				bind:this={inputRef}
 				type="text"
 				placeholder="Paste a link"
-				class="flex-1 bg-white p-1 text-sm outline-none"
+				class="flex-1 dark:bg-black bg-white p-1 text-sm outline-none"
 				value={editor.getAttributes('link').href || ''}
 			/>
 			{#if editor.getAttributes('link').href}
@@ -59,7 +59,7 @@
 				</button>
 			{:else}
 				<button
-					class="flex items-center rounded-sm p-1 text-stone-600 transition-all hover:bg-stone-100"
+					class="flex items-center rounded-sm p-1 text-gray-600 dark:text-slate-300 dark:hover:bg-slate-800 transition-all hover:bg-gray-100"
 				>
 					<Check class="h-4 w-4" />
 				</button>

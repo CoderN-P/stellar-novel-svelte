@@ -18,7 +18,10 @@ import { InlineEquationNode } from '$lib/ui/editor/extensions/inlineEquation.js'
 import { BlockEquationNode } from '$lib/ui/editor/extensions/blockEquation.js';
 import UpdatedImage from './updated-image.js';
 import { VocabularyNode } from './vocabulary.js';
+import { CustomHeading } from './heading.js';
+import { EmbedNode } from './embed.js';
 import { CodeBlockNode } from '$lib/ui/editor/extensions/codeBlock.js';
+import { QuestionNode } from '$lib/ui/editor/extensions/question.js';
 
 export const defaultExtensions = [
 	StarterKit.configure({
@@ -39,13 +42,14 @@ export const defaultExtensions = [
 		},
 		blockquote: {
 			HTMLAttributes: {
-				class: 'border-l-4 border-gray-200'
+				class: 'border-l-4 dark:border-slate-800 border-gray-200'
 			}
 		},
 		codeBlock: false,
+		heading: false,
 		code: {
 			HTMLAttributes: {
-				class: 'rounded-md bg-gray-100 px-1 py-0.5 font-mono text-sm text-gray-800',
+				class: 'rounded-md dark:bg-slate-800 bg-gray-100 px-1 py-0.5 font-mono text-sm dark:text-slate-300 text-gray-800',
 				spellcheck: 'false'
 			}
 		},
@@ -58,6 +62,7 @@ export const defaultExtensions = [
 	}),
 	CodeBlockNode,
 	InlineEquationNode,
+	CustomHeading,
 	BlockEquationNode,
 	GlobalDragHandle.configure({
 		handle: '.drag-handle',
@@ -85,13 +90,13 @@ export const defaultExtensions = [
 		}
 	}).configure({
 		HTMLAttributes: {
-			class: 'mt-4 mb-6 border-t border-stone-300'
+			class: 'mt-4 mb-6 border-t dark:border-slate-700 border-gray-300'
 		}
 	}),
 	TiptapLink.configure({
 		HTMLAttributes: {
 			class:
-				'text-stone-400 underline underline-offset-[3px] hover:text-stone-600 transition-colors cursor-pointer'
+				'text-blue-500 underline underline-offset-[3px] dark:hover:text-blue-600 hover:text-blue-400 transition-colors cursor-pointer'
 		}
 	}),
 	TiptapImage.extend({
@@ -101,12 +106,12 @@ export const defaultExtensions = [
 	}).configure({
 		allowBase64: true,
 		HTMLAttributes: {
-			class: 'rounded-lg border border-stone-200'
+			class: 'rounded-lg border dark:border-slate-800 border-gray-200'
 		}
 	}),
 	UpdatedImage.configure({
 		HTMLAttributes: {
-			class: 'rounded-lg border border-stone-200'
+			class: 'rounded-lg border dark:border-slate-800 border-gray-200'
 		}
 	}),
 	Placeholder.configure({
@@ -123,6 +128,8 @@ export const defaultExtensions = [
 	TiptapUnderline,
 	TextStyle,
 	Color,
+	QuestionNode,
+	EmbedNode,
 	Highlight.configure({
 		multicolor: true
 	}),

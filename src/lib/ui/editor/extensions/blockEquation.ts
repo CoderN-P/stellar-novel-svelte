@@ -10,7 +10,8 @@ export const BlockEquationNode = Node.create({
 	inline: false,
 	selectable: true,
 	atom: true,
-
+	draggable: true,
+	
 	addAttributes() {
 		return {
 			formula: {
@@ -77,7 +78,16 @@ export const BlockEquationNode = Node.create({
 					const { formula } = node.attrs;
 					state.write(`$$${formula}$$`);
 				},
+				parse: {
+					block: [
+						{
+							match: /^\$\$(.+?)\$\$/,
+							node: 'blockEquation',
+							getAttrs: match => ({ formula: match[1].trim() }),
+						},
+					],
+				},
 			},
-		}
+		};
 	}
 });
