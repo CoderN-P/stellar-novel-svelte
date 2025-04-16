@@ -7,6 +7,7 @@
 	import { addToast } from '$lib/ui/toasts.svelte';
 	import EmbedSelector from './EmbedSelector.svelte';
 	import VocabularySelector from './VocabularySelector.svelte';
+	import SmilesSelector from './SmilesSelector.svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	export let items: CommandItemProps[] = [];
@@ -18,6 +19,7 @@
 	let selectedIndex = 0;
 	let showEmbedSelector = false;
 	let showVocabularySelector = false;
+	let showSmilesSelector = false;
 
 	const { complete, isLoading } = useCompletion({
 		id: 'novel',
@@ -69,9 +71,15 @@
 			} else if (item.title === 'Embed Component') {
 				showEmbedSelector = true;
 				showVocabularySelector = false;
+				showSmilesSelector = false;
 			} else if (item.title === 'Vocabulary Term') {
 				showVocabularySelector = true;
 				showEmbedSelector = false;
+				showSmilesSelector = false;
+			} else if (item.title === 'SMILES String') {
+				showSmilesSelector = true;
+				showEmbedSelector = false;
+				showVocabularySelector = false;
 			} else {
 				command(item);
 			}
@@ -106,6 +114,11 @@
 
 	function handleVocabularyClose() {
 		showVocabularySelector = false;
+		dispatch('close');
+	}
+
+	function handleSmilesClose() {
+		showSmilesSelector = false;
 		dispatch('close');
 	}
 </script>
@@ -152,6 +165,10 @@
 	{:else if showVocabularySelector}
 		<div class="absolute top-0 left-full ml-2 z-50">
 			<VocabularySelector {editor} {range} on:close={handleVocabularyClose} />
+		</div>
+	{:else if showSmilesSelector}
+		<div class="absolute top-0 left-full ml-2 z-50">
+			<SmilesSelector {editor} {range} on:close={handleSmilesClose} />
 		</div>
 	{/if}
 </div>

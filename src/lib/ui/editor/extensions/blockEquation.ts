@@ -24,6 +24,12 @@ export const BlockEquationNode = Node.create({
 		return [
 			{
 				tag: 'block-equation',
+				getAttrs: (el) => {
+					if (!(el instanceof HTMLElement)) return false;
+					return {
+						formula: el.getAttribute('data-formula') || '',
+					};
+				},
 			},
 		];
 	},
@@ -79,13 +85,32 @@ export const BlockEquationNode = Node.create({
 					state.write(`$$${formula}$$`);
 				},
 				parse: {
-					block: [
-						{
-							match: /^\$\$(.+?)\$\$/,
-							node: 'blockEquation',
-							getAttrs: match => ({ formula: match[1].trim() }),
-						},
-					],
+					setup(markdownit) {
+						markdownit.block.ruler.before('fence', 'block_equation', (state, startLine, endLine, silent) => {
+							const startPos = state.bMarks[startLine] + state.tShift[startLine];
+							const maxPos = state.eMarks[startLine];
+
+							const lineText = state.src.slice(startPos, maxPos).trim();
+							if (!lineText.startsWith('$$') || !lineText.endsWith('$$')) return false;
+
+							if (silent) return true;
+
+							const formula = lineText.slice(2, -2).trim();
+
+							const token = state.push('block_equation', '', 0);
+							token.block = true;
+							token.attrs = { formula };
+							token.content = formula;
+							token.map = [startLine, startLine + 1];
+							state.line = startLine + 1;
+
+							return true;
+						});
+						markdownit.renderer.rules.block_equation = function(tokens, idx) {
+							const formula = tokens[idx].attrs.formula;
+							return `<block-equation data-formula="${formula}"></block-equation>`;
+						}
+					}
 				},
 			},
 		};

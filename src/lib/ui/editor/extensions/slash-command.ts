@@ -15,7 +15,7 @@ import {
 	Text,
 	TextQuote,
 	Box,
-	BookOpen, HelpCircle
+	BookOpen, HelpCircle, Beaker, Table
 } from 'lucide-svelte';
 import CommandList from './CommandList.svelte';
 // import { toast } from 'sonner';
@@ -30,7 +30,7 @@ export interface CommandItemProps {
 	title: string;
 	description?: string;
 	searchTerms?: string[];
-	icon?: string;
+	icon?: any;
 	command: (props: { editor: Editor; range: Range }) => void;
 }
 
@@ -61,45 +61,56 @@ const Command = Extension.create({
 	}
 });
 
-const getSuggestionItems = ({ query }: { query: string }) => {
+export const getSuggestionItems = ({ query }: { query: string }) => {
 	return [
 		{
 			title: 'Continue writing',
-			description: 'Use AI to expand your thoughts.',
-			searchTerms: ['gpt'],
-			icon: Magic
+			description: 'Use AI to expand your thoughts',
+			searchTerms: ['gpt', 'ai', 'expand', 'continue', 'more'],
+			icon: Magic,
+			command: ({ editor, range }: { editor: Editor; range: Range }) => {
+				editor.chain().focus().deleteRange(range).run();
+				// va.track('Slash Command Used', {
+				// 	command: 'Continue writing'
+				// });
+			}
 		},
 		{
 			title: 'Embed Component',
-			description: 'Embed a custom component.',
-			searchTerms: ['embed', 'component', 'custom'],
+			description: 'Embed a component in your document',
+			searchTerms: ['embed', 'component', 'block', 'object'],
 			icon: Box,
-			command: ({ editor, range }: CommandProps) => {
+			command: ({ editor, range }: { editor: Editor; range: Range }) => {
 				editor.chain().focus().deleteRange(range).run();
-				// We'll handle the component selection in the CommandList component
-				return true;
+				// va.track('Slash Command Used', {
+				// 	command: 'Embed Component'
+				// });
 			}
 		},
 		{
 			title: 'Vocabulary Term',
-			description: 'Create a vocabulary term with definition.',
-			searchTerms: ['vocab', 'term', 'definition', 'glossary'],
+			description: 'Add a vocabulary term with definition',
+			searchTerms: ['vocab', 'term', 'definition', 'word'],
 			icon: BookOpen,
-			command: ({ editor, range }: CommandProps) => {
+			command: ({ editor, range }: { editor: Editor; range: Range }) => {
 				editor.chain().focus().deleteRange(range).run();
-				// We'll handle the vocabulary creation in the CommandList component
-				return true;
+				// va.track('Slash Command Used', {
+				// 	command: 'Vocabulary Term'
+				// });
 			}
 		},
-		// {
-		// 	title: 'Send Feedback',
-		// 	description: 'Let us know how we can improve.',
-		// 	icon: MessageSquarePlus,
-		// 	command: ({ editor, range }: CommandProps) => {
-		// 		editor.chain().focus().deleteRange(range).run();
-		// 		window.open('/feedback', '_blank');
-		// 	}
-		// },
+		{
+			title: 'SMILES String',
+			description: 'Add a chemical SMILES notation',
+			searchTerms: ['smiles', 'chemical', 'molecule', 'structure'],
+			icon: Beaker,
+			command: ({ editor, range }: { editor: Editor; range: Range }) => {
+				editor.chain().focus().deleteRange(range).run();
+				// va.track('Slash Command Used', {
+				// 	command: 'SMILES String'
+				// });
+			}
+		},
 		{
 			title: 'Text',
 			description: 'Just start typing with plain text.',
@@ -225,6 +236,15 @@ const getSuggestionItems = ({ query }: { query: string }) => {
 					.run();
 			},
 			icon: HelpCircle,
+		},
+		{
+			title: 'Table',
+			description: 'Insert a table with rows and columns.',
+			searchTerms: ['table', 'grid', 'rows', 'columns'],
+			icon: Table,
+			command: ({ editor, range }: CommandProps) => {
+				editor.commands.insertTable({ rows: 3, cols: 3 }).run();
+			}
 		}
 	].filter((item) => {
 		if (typeof query === 'string' && query.length > 0) {

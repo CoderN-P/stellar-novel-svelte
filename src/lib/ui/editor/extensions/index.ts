@@ -22,6 +22,8 @@ import { CustomHeading } from './heading.js';
 import { EmbedNode } from './embed.js';
 import { CodeBlockNode } from '$lib/ui/editor/extensions/codeBlock.js';
 import { QuestionNode } from '$lib/ui/editor/extensions/question.js';
+import Smiles from '$lib/ui/editor/renderers/Smiles.svelte';
+import { SmilesNode } from '$lib/ui/editor/extensions/smiles.js';
 
 export const defaultExtensions = [
 	StarterKit.configure({
@@ -128,6 +130,7 @@ export const defaultExtensions = [
 	TiptapUnderline,
 	TextStyle,
 	Color,
+	SmilesNode,
 	QuestionNode,
 	EmbedNode,
 	Highlight.configure({

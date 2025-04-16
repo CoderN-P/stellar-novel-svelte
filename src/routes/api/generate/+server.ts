@@ -57,7 +57,10 @@ export const POST: RequestHandler = async ({ request: req }) => {
 				content:
 					'You are an AI writing assistant that continues existing text based on context from prior text. ' +
 					'Give more weight/priority to the later characters than the beginning ones. ' +
-					'Limit your response to no more than 200 characters, but make sure to construct complete sentences.'
+					'Limit your response to no more than 200 characters, but make sure to construct complete sentences, and use markdown.' +
+					'In addition to common markdown syntax, you can also use the following syntax: ' +
+					'1. $...$ for inline latex math, 2. $$...$$ for block latex math, 3. ```lang\n...``` for code blocks, 4. |term: definition| for vocabulary terms' 
+				
 				// we're disabling markdown for now until we can figure out a way to stream markdown text with proper formatting: https://github.com/steven-tey/novel/discussions/7
 				// "Use Markdown formatting when appropriate.",
 			},

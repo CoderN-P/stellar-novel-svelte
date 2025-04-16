@@ -5,6 +5,7 @@
 	import '../../styles/tailwind.css';
 
 	import { getPrevText } from '$lib/editor.js';
+	import { setContext, type SvelteComponent } from 'svelte';
 	import { createDebouncedCallback, noop } from '$lib/ui/utils.js';
 	import { Editor, Extension, type JSONContent } from '@tiptap/core';
 	import type { EditorProps } from '@tiptap/pm/view';
@@ -37,6 +38,8 @@
 	 * Defaults to defaultEditorContent.
 	 */
 	export let value: string | JSONContent = defaultEditorContent;
+	
+	export let markdownRenderer: SvelteComponent | undefined = undefined;
 	
 	export let componentMap: Record<string, () => Promise<{ default: any }>> = {};
 	/**
@@ -78,6 +81,10 @@
 	export let editor: Editor | undefined = undefined;
 
 	let element: Element;
+	
+	if (markdownRenderer) {
+		setContext('markdownRenderer', markdownRenderer);
+	}
 
 	const { complete, completion, isLoading, stop } = useCompletion({
 		id: 'novel',

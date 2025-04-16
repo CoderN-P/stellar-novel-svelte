@@ -5,7 +5,6 @@ import { InputRule } from '@tiptap/core';
 
 export const QuestionNode = Node.create({
   name: 'question',
-
   group: 'block',
   content: 'block+',
   selectable: true,
@@ -65,14 +64,14 @@ export const QuestionNode = Node.create({
       new InputRule({
         find: /^::\?$/,
         handler: ({ state, range }) => {
-          const { tr } = state;
-          tr.delete(range.from, range.to);
-          
-          // Create a new question node
+          const { from, to } = range;
           const questionNode = this.type.create({
             options: [],
             correctOption: '',
           });
+          
+          
+          
           
           tr.replaceSelectionWith(questionNode);
           return tr;
@@ -236,6 +235,7 @@ export const QuestionNode = Node.create({
                 options,
                 correctOption,
               };
+              token.content = lines.slice(contentStartLine - (startLine + 1)).join('\n').trim();
               token.map = [startLine, endingLine + 1];
               
               // Process the content
@@ -250,7 +250,9 @@ export const QuestionNode = Node.create({
               const options = JSON.stringify(token.attrs.options);
               const correctOption = token.attrs.correctOption;
               
-              return `<div data-question data-options='${options}' data-correct-option='${correctOption}'>${token.content}</div>`;
+              const divData = `<div data-question data-options='${options}' data-correct-option='${correctOption}'>${token.content}</div>`;
+              console.log(divData);
+              return divData;
             };
           }
         }

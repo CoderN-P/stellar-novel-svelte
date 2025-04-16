@@ -33,6 +33,7 @@
 		onHidden: () => {
 			isNodeSelectorOpen.set(false);
 			isColorSelectorOpen.set(false);
+			isVocabSelectorOpen.set(false);
 			isLinkSelectorOpen.set(false);
 		}
 	};
@@ -82,6 +83,7 @@
 	const reset = () => {
 		isNodeSelectorOpen.set(false);
 		isColorSelectorOpen.set(false);
+		isVocabSelectorOpen.set(false);
 		isLinkSelectorOpen.set(false);
 	};
 
@@ -126,6 +128,7 @@
 	<NodeSelector {editor} bind:isOpen={$isNodeSelectorOpen} />
 	<VocabSelector {editor} bind:isOpen={$isVocabSelectorOpen} />
 	<LinkSelector {editor} bind:isOpen={$isLinkSelectorOpen} />
+
 	<div class="flex">
 		{#each items as item, index (index)}
 			<button

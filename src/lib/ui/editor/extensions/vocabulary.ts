@@ -118,11 +118,12 @@ export const VocabularyNode = Node.create({
             markdownit.inline.ruler.before('text', 'vocabulary', function(state, silent) {
               const start = state.pos;
               const max = state.posMax;
-
+            
+              console.log(state.src.charAt(start));
               if (state.src.charAt(start) !== '|') return false;
+
               let end = start + 1;
-              while (end < max) {
-                if (state.src[end] === '|' && state.src[end - 1] !== '\\') break;
+              while (end < max && state.src[end] !== '|') {
                 end++;
               }
               if (end >= max) return false;
@@ -135,12 +136,17 @@ export const VocabularyNode = Node.create({
               const definition = definitionParts.join(':').trim();
 
               if (!term || !definition) return false;
+              
+              if (silent) return true;
 
-              if (!silent) {
-                const token = state.push('vocabulary', '', 0);
-                token.content = term;
-                token.meta = { definition };
-              }
+              
+              const token = state.push('vocabulary', '', 0);
+              token.attrs  = {
+                term,
+                definition
+              };
+              token.content = term;
+              
 
               state.pos = end + 1;
               return true;
@@ -148,13 +154,10 @@ export const VocabularyNode = Node.create({
 
             markdownit.renderer.rules.vocabulary = function(tokens, idx) {
               const token = tokens[idx];
-              const term = token.content;
-              const def = token.meta.definition;
-              return `<span data-vocabulary-term data-term="${term}" data-definition="${def}">${term}</span>`;
+              const term = token.attrs.term;
+              const def = token.attrs.definition;
+              return `<span data-vocabulary-term data-term="${term}" data-definition="${def}"></span>`;
             };
-          },
-          updateDOM(el){
-            console.log(el);
           }
         },
         

@@ -3,10 +3,15 @@
 	import { theme } from 'mode-watcher';
 	import { Check, Edit, Plus, Trash, Eye, Settings } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
+	import SvelteMarkdown from 'svelte-markdown';
+	import { Editor } from '@tiptap/core';
+	import { getContext } from 'svelte';
+	import { defaultExtensions } from '$lib/ui/editor/extensions/index.js';
 
 	export let node;
 	export let updateAttributes;
 	export let selected;
+	let markdownRenderer = getContext('markdownRenderer') || SvelteMarkdown;
 
 	const dispatch = createEventDispatcher();
 	
@@ -14,10 +19,30 @@
 	let editingOptionIndex = -1;
 	let editingOption = '';
 	let activeTab = 'edit'; // 'view' or 'edit'
+	let markdown = '';
+	
 	
 	$: currentTheme = $theme;
 	$: options = node.attrs.options || [];
 	$: correctOption = node.attrs.correctOption || '';
+
+	$: getMarkdown(node.content);
+	
+	function getMarkdown(node) {
+		let nodeContent = { 
+			type: 'doc',
+			content: JSON.parse(JSON.stringify(node.content)),
+		};
+		
+
+		const editor = new Editor({
+				content: nodeContent,
+				extensions: defaultExtensions,
+			});
+			markdown = editor.storage.markdown.getMarkdown();
+			console.log(markdown);
+			editor.destroy();
+	}
 	
 	// Convert index to letter (0 = A, 1 = B, etc.)
 	function indexToLetter(index: number): string {
@@ -218,10 +243,11 @@
 				</div>
 			</div>
 		</div>
+			
 			<div class="{activeTab === 'view' ? 'block' : 'hidden'}">
 				<div class="p-4">
 					<div class="mb-4">
-						
+						<svelte:component this={markdownRenderer} source={markdown}/>
 					</div>
 					
 					<div class="space-y-2">
