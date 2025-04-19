@@ -8,6 +8,7 @@ const lowlight = createLowlight(common);
 
 export const CodeBlockNode = CodeBlockLowlight.extend({
 	name: 'codeBlock',
+	selectable: true,
 	
 	addAttributes() {
 		return {

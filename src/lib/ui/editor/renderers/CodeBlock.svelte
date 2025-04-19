@@ -26,8 +26,7 @@
 
 	let editorDiv;
 	let view;
-
-	$: currentTheme = $theme;
+	
 
 	const languages = {
 		javascript,
@@ -47,7 +46,8 @@
 	const langOptions = Object.keys(languages);
 
 	function getThemeExtension() {
-		return currentTheme === 'dark' ? oneDark : ayuLight;
+		console.log('Current theme:', $theme);
+		return $theme === 'dark' ? oneDark : ayuLight;
 	}
 
 	function updateEditorTheme() {
@@ -77,9 +77,10 @@
 		});
 	}
 
-	$: if (currentTheme) {
+	theme.subscribe((newTheme) => {
+		console.log('Theme changed:', newTheme);
 		updateEditorTheme();
-	}
+	});
 
 	onMount(() => {
 		view = new EditorView({
@@ -115,8 +116,8 @@
 </script>
 
 <NodeViewWrapper>
-	<div class="relative dark:bg-zinc-800 bg-white my-2 border dark:border-zinc-700 border-gray-200 rounded-lg overflow-hidden shadow-sm" contenteditable="false">
-		<div class="w-full rounded-t-lg items-center border-b dark:border-zinc-700 border-gray-200 justify-between flex flex-row px-3 py-2 bg-gray-50 dark:bg-zinc-900">
+	<div class="relative dark:bg-slate-900 bg-white my-2 border dark:border-slate-800 border-gray-200 rounded-lg overflow-hidden shadow-sm" contenteditable="false">
+		<div class="w-full rounded-t-lg items-center border-b dark:border-slate-700 border-gray-200 justify-between flex flex-row px-3 py-2">
 			<button 
 				on:click={() => {
 					navigator.clipboard.writeText(node.content.textBetween(0, node.content.size, '\n'));
@@ -126,7 +127,7 @@
 				<Copy class="w-4 h-4" />
 			</button>
 			<Select.Root onSelectedChange={setLanguage}>
-				<Select.Trigger class="border dark:border-zinc-700 border-gray-200 dark:bg-zinc-800 bg-white text-gray-700 dark:text-gray-300 dark:hover:bg-zinc-700 hover:bg-gray-50 w-min h-min px-2 py-1 rounded-md text-sm transition-colors">
+				<Select.Trigger class="border dark:border-slate-700 border-gray-200 dark:bg-slate-800 bg-white text-gray-700 dark:text-slate-300 dark:hover:bg-slate-700 hover:bg-gray-50 w-min h-min px-2 py-1 rounded-md text-sm transition-colors">
 					{language}
 				</Select.Trigger>
 				<Select.Content>
@@ -138,6 +139,6 @@
 				</Select.Content>
 			</Select.Root>
 		</div>
-		<div bind:this={editorDiv} class="dark:text-gray-200" />
+		<div bind:this={editorDiv} />
 	</div>
 </NodeViewWrapper>

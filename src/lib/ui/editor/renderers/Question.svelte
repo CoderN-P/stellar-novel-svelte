@@ -148,7 +148,7 @@
 </script>
 
 <NodeViewWrapper class="question-node">
-	<div class="relative my-4 rounded-lg border dark:border-slate-700 border-gray-200 bg-white dark:bg-slate-800 shadow-sm overflow-hidden">
+	<div class="relative my-4 rounded-lg {selected ? 'border-2 border-sky-500' : 'border dark:border-slate-700 border-gray-200'} bg-white dark:bg-slate-800 shadow-sm overflow-hidden">
 		<div class="flex items-center justify-between p-3 border-b dark:border-slate-700 border-gray-200 bg-gray-50 dark:bg-slate-900">
 			<h3 class="text-lg font-medium text-gray-900 dark:text-slate-100">Question</h3>
 			<div class="flex items-center space-x-2">

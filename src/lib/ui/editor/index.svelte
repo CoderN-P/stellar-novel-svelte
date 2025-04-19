@@ -1,8 +1,7 @@
 <script lang="ts">
 	// import 'cal-sans';
-	import '../../styles/index.css';
 	import '../../styles/prosemirror.css';
-	import '../../styles/tailwind.css';
+	
 
 	import { getPrevText } from '$lib/editor.js';
 	import { setContext, type SvelteComponent } from 'svelte';
@@ -19,7 +18,7 @@
 	import Toasts, { addToast } from '../toasts.svelte';
 
 	import EditorBubbleMenu from './bubble-menu/index.svelte';
-	
+	import { Plugin } from '@tiptap/pm/state';
 
 	/**
 	 * The API route to use for the OpenAI completion API.
@@ -52,6 +51,7 @@
 	 * Defaults to {}.
 	 */
 	export let editorProps: EditorProps = {};
+	
 	/**
 	 * A callback function that is called whenever the editor is updated.
 	 * Defaults to () => {}.
@@ -67,6 +67,8 @@
 	 * Defaults to 750.
 	 */
 	export let debounceDuration = 750;
+	
+	export let highlightedMarkdown: string = '';
 	/**
 	 * The key to use for storing the editor's value in local storage.
 	 * Defaults to "novel__content".
@@ -116,6 +118,24 @@
 	}
 
 	let prev = '';
+	
+	function updateHighlightedMarkdown() {
+		const { from, to } = editor.state.selection;
+		const slice = editor.state.doc.cut(from, to);
+		
+		console.log(JSON.stringify(slice.toJSON(), null, 2));
+
+		const temp = new Editor({
+			extensions: defaultExtensions,
+			content: {
+				type: 'doc',
+				content: slice.content.toJSON(),
+			},
+		});
+
+		highlightedMarkdown = temp.storage.markdown.getMarkdown();
+		console.log(highlightedMarkdown);
+	}
 
 	function insertAiCompletion() {
 		const diff = $completion.slice(prev.length);
@@ -141,14 +161,34 @@
 				// force re-render so `editor.isActive` works as expected
 				editor = editor;
 			},
-			extensions: [...defaultExtensions, ...extensions],
+			extensions: [
+				...defaultExtensions,
+				...extensions,
+				Extension.create({
+					name: 'SelectionWatcher',
+					addProseMirrorPlugins() {
+						return [
+							new Plugin({
+								view: () => ({
+									update(view, prevState) {
+										const prev = prevState.selection;
+										const curr = view.state.selection;
+										if (!prev.eq(curr)) {
+											updateHighlightedMarkdown();
+										}
+									},
+								}),
+							}),
+						];
+					},
+				}),
+			],
 			editorProps: {
 				...defaultEditorProps,
 				...editorProps
 			},
 			onUpdate: (e) => {
-				const markdown = e.editor.storage.markdown.getMarkdown();
-				console.log(markdown);
+		
 				const selection = e.editor.state.selection;
 				const lastTwo = getPrevText(e.editor, {
 					chars: 2

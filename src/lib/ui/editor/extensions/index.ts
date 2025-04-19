@@ -1,4 +1,4 @@
-import { InputRule } from '@tiptap/core';
+import { Editor, InputRule } from '@tiptap/core';
 import { Color } from '@tiptap/extension-color';
 import Highlight from '@tiptap/extension-highlight';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';

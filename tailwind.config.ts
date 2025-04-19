@@ -1,6 +1,6 @@
 import { Config } from 'tailwindcss';
 
-import sharedConfig from './src/lib/styles/tailwind.config.cjs';
+import sharedConfig from './static/styles/tailwind.config.cjs';
 import plugin from 'tailwindcss/plugin';
 
 const config: Config = {

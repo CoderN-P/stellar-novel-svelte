@@ -5,6 +5,7 @@
 	import { onMount, tick } from 'svelte';
 
 	export let node;
+	export let selected;
 
 	let mounted = false;
 
@@ -17,7 +18,7 @@
 
 <NodeViewWrapper class="my-2">
 	{#if mounted}
-		<div class="rounded-lg border dark:bg-slate-900 dark:border-slate-800 border-gray-100 bg-white p-4">
+		<div class="{selected ? 'border-sky-500 border-2' : 'border dark:border-slate-800 border-gray-100 ' } rounded-lg dark:bg-slate-900 bg-white p-4">
 			<Katex
 				displayMode
 				throwError={false}

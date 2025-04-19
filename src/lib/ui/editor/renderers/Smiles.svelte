@@ -144,7 +144,7 @@
 			</div>
 		</div>
 	{:else}
-		<div class="smiles-display inline-flex flex-col border border-gray-100 items-center gap-1 px-2 py-1 rounded-md bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-300">
+		<div class="smiles-display inline-flex flex-col border dark:border-slate-800 border-gray-100 items-center gap-1 px-2 py-1 rounded-md bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-300">
 			<svg bind:this={svgElement} data-smiles={smiles} />
 			<div class="flex items-center gap-1">
 				<Beaker size="14" />
